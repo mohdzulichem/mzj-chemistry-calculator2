@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MZJ Chemistry Web Calculator</title>
+  <link rel="icon" href="assets/mzj-flask.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/mzj-icon-180.png">
+  <meta name="description" content="MZJ Chemistry Web Calculator — a comprehensive online tool for chemistry students and educators. Perform molar mass, molarity, dilution, pH, and ideal gas law calculations easily. Developed by Dr. Mohd Zuli Jaafar (UiTM) to support digital learning and smart chemistry education.">
+  <meta property="og:title" content="MZJ Chemistry Web Calculator">
+  <meta property="og:description" content="Multi-tool chemistry calculator: molar mass, molarity, dilution, pH (strong acid/base), ideal gas law.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/social-card.png">
+  <meta name="theme-color" content="#4f46e5">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>:root { --mzj-primary: #4f46e5; --mzj-secondary: #a21caf; } .uitm-banner { background: linear-gradient(90deg,#4f46e5,#a21caf); }</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <div class="uitm-banner text-white">
+    <div class="max-w-5xl mx-auto px-4 py-2 flex items-center gap-3">
+      <img src="assets/mzj-flask.svg" alt="MZJ" class="w-6 h-6 drop-shadow">
+      <span class="text-sm font-medium" data-i18n="banner">Hosted on GitHub Pages • MZJ Edition</span>
+      <div class="ml-auto flex items-center gap-2">
+        <button id="langEN" class="text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20 border border-white/20">EN</button>
+        <button id="langMS" class="text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20 border border-white/20">BM</button>
+      </div>
+    </div>
+  </div>
+  <header class="bg-white border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+      <img src="assets/mzj-flask.svg" alt="MZJ" class="w-9 h-9">
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold leading-tight" data-i18n="title">MZJ Chemistry Web Calculator</h1>
+        <p class="text-xs md:text-sm text-slate-500" data-i18n="subtitle">UiTM • Chemometrics • Smart Chemistry via AI</p>
+      </div>
+      <a href="#about" class="ml-auto text-sm text-indigo-700 hover:text-indigo-900" data-i18n="aboutLink">About</a>
+      <a href="https://github.com/" target="_blank" class="text-sm text-slate-500 hover:text-slate-700">GitHub</a>
+    </div>
+  </header>
+  <main class="max-w-5xl mx-auto px-4 pb-24 pt-6">
+    <p class="mt-1 text-slate-600" data-i18n="lead">A clean, fast, and mobile-friendly set of chemistry mini-calculators. Uses <span class="italic">litre</span> spelling for SI units (Malaysia).</p>
+    <div class="mt-4 mb-4 flex flex-wrap gap-2" id="tabbar"></div>
+    <section id="panel-container" class="bg-white shadow rounded-2xl p-5 md:p-6 border border-slate-200"></section>
+    <section id="about" class="mt-10 bg-indigo-50 border border-indigo-200 rounded-2xl p-5">
+      <h2 class="text-xl font-semibold mb-2 text-indigo-800" data-i18n="aboutTitle">About This Calculator</h2>
+      <p class="text-slate-700 leading-relaxed" data-i18n="aboutP1">The <strong>MZJ Chemistry Web Calculator</strong> is a digital learning tool designed for students, educators, and researchers in chemistry. It integrates essential chemical computations — including molar mass, molarity, dilution, pH (strong acid and base), and the ideal gas law — in one easy-to-use web platform.</p>
+      <p class="text-slate-700 mt-3 leading-relaxed" data-i18n="aboutP2">Developed by <strong>Dr. Mohd Zuli Jaafar</strong> (UiTM Melaka, Faculty of Applied Sciences), this calculator is part of the <em>Smart Chemistry via AI</em> and <em>Digital Tools for Chemistry Education</em> initiative under the <strong>MZJ Chemometrics Method</strong>.</p>
+      <p class="text-slate-700 mt-3 leading-relaxed">© <span id="year2"></span> Mohd Zuli Jaafar • UiTM • <span data-i18n="eduUse">Educational Use Only</span></p>
+      <p class="text-slate-700 mt-1"><span data-i18n="email">email: mohdzuli@uitm.edu.my</span></p>
+    </section>
+  </main>
+  <footer class="mt-8 text-sm text-slate-500 border-t border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 py-6">
+      <p>© <span id="year"></span> MZJ — <span data-i18n="tagline">Smart Chemistry via AI</span>. <span data-i18n="verify">Always verify for high-stakes work.</span></p>
+    </div>
+  </footer>
+  <script>
+    const I18N = {
+      en: {
+        banner: "Hosted on GitHub Pages • MZJ Edition",
+        title: "MZJ Chemistry Web Calculator",
+        subtitle: "UiTM • Chemometrics • Smart Chemistry via AI",
+        email: "email: mohdzuli@uitm.edu.my",
+
+        aboutLink: "About",
+        lead: "A clean, fast, and mobile-friendly set of chemistry mini-calculators. Uses <span class='italic'>litre</span> spelling for SI units (Malaysia).",
+        aboutTitle: "About This Calculator",
+        aboutP1: "The <strong>MZJ Chemistry Web Calculator</strong> is a digital learning tool designed for students, educators, and researchers in chemistry. It integrates essential chemical computations — including molar mass, molarity, dilution, pH (strong acid and base), and the ideal gas law — in one easy-to-use web platform.",
+        aboutP2: "Developed by <strong>Dr. Mohd Zuli Jaafar</strong> (UiTM Melaka, Faculty of Applied Sciences), this calculator is part of the <em>Smart Chemistry via AI</em> and <em>Digital Tools for Chemistry Education</em> initiative under the <strong>MZJ Chemometrics Method</strong>.",
+        eduUse: "Educational Use Only",
+        tagline: "Smart Chemistry via AI",
+        verify: "Always verify for high-stakes work.",
+        tabs: { molarMass: "Molar Mass", molarity: "Molarity (M)", dilution: "Dilution (C₁V₁=C₂V₂)", pH: "pH (strong acid/base)", igl: "Ideal Gas Law (PV=nRT)", triangle: "Mass–Moles–Molar Mass" },
+        mmHelper: "Enter a chemical formula (supports parentheses and hydrates, e.g., CuSO4·5H2O).",
+        mmPlaceholder: "e.g., NaCl, Ca(OH)2, Fe2(SO4)3·9H2O",
+        calc: "Calculate",
+        mmOut: "Molar mass = {x} g·mol⁻¹",
+        comp: "Composition",
+        molarityLead: "Compute M from mass (g), formula, and volume (L). Or compute required mass given M & volume.",
+        findM: "Find M from mass + volume",
+        mass: "Mass (g)",
+        formula: "Formula (e.g., KOH)",
+        volumeL: "Volume (L)",
+        computeM: "Compute M",
+        targetM: "Find mass for target M",
+        Munit: "M (mol·L⁻¹)",
+        computeMass: "Compute mass",
+        dilutionLead: "Leave one box empty — the calculator solves for it. Volumes in litre (L), concentration in mol·L⁻¹ or any consistent unit.",
+        solve: "Solve",
+        leaveOne: "Leave exactly one field blank to solve.",
+        sameUnits: " (same units as inputs)",
+        acid: "Acid",
+        base: "Base",
+        conc: "Concentration (mol·L⁻¹)",
+        equiv: "Equivalents (e.g., 1 or 2)",
+        computePH: "Compute pH",
+        phAssume: "Assumes complete dissociation (e.g., HCl, HNO₃, NaOH, KOH). For polyprotic strong acids, set equivalents of H⁺ released.",
+        iglLead: "Use R = 0.082057 L·atm·mol⁻¹·K⁻¹. Leave one field empty to solve for it.",
+        triangleLead: "Enter any two and solve for the third. m = n·M.",
+        leaveExactly: "Leave exactly one field empty.",
+        errNums: "Please enter valid numbers.",
+        errPos: "Please enter positive values."
+      },
+      ms: {
+        banner: "Dihoskan di GitHub Pages • Edisi MZJ",
+        title: "Kalkulator Web Kimia MZJ",
+        subtitle: "UiTM • Kemometrik • Smart Chemistry via AI",
+        email: "emel: mohdzuli@uitm.edu.my",
+        aboutLink: "Maklumat",
+        lead: "Set kalkulator mini kimia yang pantas dan mesra telefon. Gunakan ejaan <span class='italic'>litre</span> mengikut SI Malaysia.",
+        aboutTitle: "Tentang Kalkulator Ini",
+        aboutP1: "<strong>Kalkulator Web Kimia MZJ</strong> ialah alat pembelajaran digital untuk pelajar, pensyarah dan penyelidik. Ia menggabungkan pengiraan asas — termasuk jisim molar, kepekatan molar (M), pencairan, pH (asid/bes kuat) dan hukum gas ideal — dalam satu platform yang mudah digunakan.",
+        aboutP2: "Dibangunkan oleh <strong>Dr. Mohd Zuli Jaafar</strong> (UiTM Melaka, Fakulti Sains Gunaan), kalkulator ini sebahagian daripada inisiatif <em>Smart Chemistry via AI</em> dan <em>Alat Digital untuk Pendidikan Kimia</em> di bawah <strong>Kaedah Kemometrik MZJ</strong>.",
+        eduUse: "Untuk Kegunaan Pendidikan Sahaja",
+        tagline: "Smart Chemistry via AI",
+        verify: "Sila sahkan semula untuk kerja berimpak tinggi.",
+        tabs: { molarMass: "Jisim Molar", molarity: "Kepekatan Molar (M)", dilution: "Pencairan (C₁V₁=C₂V₂)", pH: "pH (asid/bes kuat)", igl: "Hukum Gas Ideal (PV=nRT)", triangle: "Jisim–Mol–Jisim Molar" },
+        mmHelper: "Masukkan formula kimia (sokong kurungan dan hidrat, cth. CuSO4·5H2O).",
+        mmPlaceholder: "cth., NaCl, Ca(OH)2, Fe2(SO4)3·9H2O",
+        calc: "Kira",
+        mmOut: "Jisim molar = {x} g·mol⁻¹",
+        comp: "Komposisi",
+        molarityLead: "Kira M daripada jisim (g), formula dan isipadu (L). Atau kira jisim diperlukan bagi M & isipadu tertentu.",
+        findM: "Cari M daripada jisim + isipadu",
+        mass: "Jisim (g)",
+        formula: "Formula (cth., KOH)",
+        volumeL: "Isipadu (L)",
+        computeM: "Kira M",
+        targetM: "Cari jisim bagi M sasaran",
+        Munit: "M (mol·L⁻¹)",
+        computeMass: "Kira jisim",
+        dilutionLead: "Biarkan satu kotak kosong — kalkulator akan selesaikannya. Isipadu dalam liter (L), kepekatan dalam mol·L⁻¹ atau unit konsisten.",
+        solve: "Selesai",
+        leaveOne: "Biarkan tepat satu medan kosong untuk diselesaikan.",
+        sameUnits: " (unit sama seperti input)",
+        acid: "Asid",
+        base: "Bes",
+        conc: "Kepekatan (mol·L⁻¹)",
+        equiv: "Setara (cth., 1 atau 2)",
+        computePH: "Kira pH",
+        phAssume: "Andaian pendisosian lengkap (cth., HCl, HNO₃, NaOH, KOH). Untuk asid poliprotik kuat, tetapkan bilangan H⁺ dibebaskan.",
+        iglLead: "Guna R = 0.082057 L·atm·mol⁻¹·K⁻¹. Biarkan satu medan kosong untuk diselesaikan.",
+        triangleLead: "Masukkan mana-mana dua dan selesaikan yang ketiga. m = n·M.",
+        leaveExactly: "Biarkan tepat satu medan kosong.",
+        errNums: "Sila masukkan nombor yang sah.",
+        errPos: "Sila masukkan nilai positif."
+      }
+    };
+
+    function setLang(lang) {
+      document.documentElement.setAttribute('lang', lang === 'ms' ? 'ms' : 'en');
+      document.documentElement.setAttribute('data-lang', lang);
+      const dict = I18N[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('[data-tab]').forEach(b => {
+        const id = b.dataset.tab;
+        b.textContent = I18N[lang].tabs[id];
+      });
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('langEN').addEventListener('click', () => setLang('en'));
+      document.getElementById('langMS').addEventListener('click', () => setLang('ms'));
+    });
+  </script>
+  <script>
+    const ATOMIC_MASS = {
+      H: 1.008, He: 4.0026, Li: 6.94, Be: 9.0122, B: 10.81, C: 12.011, N: 14.007, O: 15.999, F: 18.998, Ne: 20.180,
+      Na: 22.989, Mg: 24.305, Al: 26.982, Si: 28.085, P: 30.974, S: 32.06, Cl: 35.45, Ar: 39.948, K: 39.098, Ca: 40.078,
+      Sc: 44.956, Ti: 47.867, V: 50.942, Cr: 51.996, Mn: 54.938, Fe: 55.845, Co: 58.933, Ni: 58.693, Cu: 63.546, Zn: 65.38,
+      Ga: 69.723, Ge: 72.630, As: 74.922, Se: 78.971, Br: 79.904, Kr: 83.798, Rb: 85.468, Sr: 87.62, Y: 88.906, Zr: 91.224,
+      Nb: 92.906, Mo: 95.95, Ru: 101.07, Rh: 102.91, Pd: 106.42, Ag: 107.87, Cd: 112.41, In: 114.82, Sn: 118.71, Sb: 121.76,
+      Te: 127.60, I: 126.90, Xe: 131.29, Cs: 132.91, Ba: 137.33, La: 138.91, Ce: 140.12, Pr: 140.91, Nd: 144.24, Sm: 150.36,
+      Eu: 151.96, Gd: 157.25, Tb: 158.93, Dy: 162.50, Ho: 164.93, Er: 167.26, Tm: 168.93, Yb: 173.05, Lu: 174.97, Hf: 178.49,
+      Ta: 180.95, W: 183.84, Re: 186.21, Os: 190.23, Ir: 192.22, Pt: 195.08, Au: 196.97, Hg: 200.59, Tl: 204.38, Pb: 207.2, Bi: 208.98, Po: 209, At: 210, Rn: 222
+    };
+
+    function parseFormula(formula) {
+      const parts = formula.split(/[·\.]/);
+      const total = {};
+      for (const part of parts) {
+        const factorMatch = part.match(/^\s*(\d+)\s*(.*)$/);
+        let factor = 1, rest = part.trim();
+        if (factorMatch) { factor = parseFloat(factorMatch[1]); rest = factorMatch[2]; }
+        const sub = parseSubformula(rest);
+        for (const [el, n] of Object.entries(sub)) total[el] = (total[el] || 0) + n * factor;
+      }
+      return total;
+    }
+    function parseSubformula(s) {
+      let i = 0; const stack = [{}];
+      while (i < s.length) {
+        const ch = s[i];
+        if (ch === '(') { stack.push({}); i++; }
+        else if (ch === ')') {
+          i++; const num = readNumber(s, i); i = num.next;
+          const mult = num.value || 1;
+          const popped = stack.pop(); const top = stack[stack.length - 1];
+          for (const [el, n] of Object.entries(popped)) top[el] = (top[el] || 0) + n * mult;
+        } else if (/[A-Z]/.test(ch)) {
+          const { symbol, next } = readElement(s, i); i = next;
+          const num = readNumber(s, i); i = num.next;
+          const count = num.value || 1; const top = stack[stack.length - 1];
+          top[symbol] = (top[symbol] || 0) + count;
+        } else if (/\s/.test(ch)) { i++; }
+        else { throw new Error(`Unexpected character '${ch}' in formula`); }
+      }
+      if (stack.length !== 1) throw new Error('Unbalanced parentheses');
+      return stack[0];
+    }
+    function readElement(s, i) {
+      let symbol = s[i++];
+      if (i < s.length && /[a-z]/.test(s[i])) symbol += s[i++];
+      if (!ATOMIC_MASS[symbol]) throw new Error(`Unknown element: ${symbol}`);
+      return { symbol, next: i };
+    }
+    function readNumber(s, i) {
+      const m = s.slice(i).match(/^(\d+(?:\.\d+)*)/);
+      if (!m) return { value: null, next: i };
+      return { value: parseFloat(m[1]), next: i + m[1].length };
+    }
+    function molarMass(formula) {
+      const comp = parseFormula(formula);
+      let mm = 0;
+      for (const [el, n] of Object.entries(comp)) mm += ATOMIC_MASS[el] * n;
+      return { mm, composition: comp };
+    }
+    function $(sel) { return document.querySelector(sel); }
+    function el(tag, cls = '', html = '') { const x = document.createElement(tag); if (cls) x.className = cls; if (html) x.innerHTML = html; return x; }
+    function pretty(obj) { return JSON.stringify(obj, null, 2); }
+
+    function setActiveTab(id) {
+      document.querySelectorAll('[data-tab]').forEach(b => {
+        b.classList.toggle('bg-indigo-600', b.dataset.tab === id);
+        b.classList.toggle('text-white', b.dataset.tab === id);
+        b.classList.toggle('bg-white', b.dataset.tab !== id);
+        b.classList.toggle('border', b.dataset.tab !== id);
+      });
+      const p = PANELS[id];
+      const container = $('#panel-container');
+      container.innerHTML = '';
+      container.appendChild(p.render());
+    }
+
+    const PANELS = {
+      molarMass: {
+        render() {
+          const root = el('div', 'space-y-4');
+          root.appendChild(el('p', 'text-sm text-slate-600', I18N[document.documentElement.dataset.lang].mmHelper));
+          const row = el('div', 'flex flex-col md:flex-row gap-3');
+          const input = el('input', 'w-full md:flex-1 rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500', '');
+          input.placeholder = I18N[document.documentElement.dataset.lang].mmPlaceholder;
+          const btn = el('button', 'px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700', I18N[document.documentElement.dataset.lang].calc);
+          const mmOut = el('div', 'text-lg font-semibold');
+          const compOut = el('pre', 'bg-slate-100 rounded-xl p-3 overflow-auto text-sm');
+          row.append(input, btn);
+          root.append(row, mmOut, compOut);
+          btn.addEventListener('click', () => {
+            try {
+              const { mm, composition } = molarMass(input.value.trim());
+              mmOut.innerHTML = I18N[document.documentElement.dataset.lang].mmOut.replace('{x}', mm.toFixed(3));
+              compOut.textContent = pretty(composition);
+            } catch (e) { mmOut.textContent = ''; compOut.textContent = e.message; }
+          });
+          return root;
+        }
+      },
+
+      molarity: {
+        render() {
+          const t = I18N[document.documentElement.dataset.lang];
+          const root = el('div', 'space-y-4');
+          root.appendChild(el('p', 'text-sm text-slate-600', t.molarityLead));
+          const grid = el('div', 'grid md:grid-cols-2 gap-4');
+
+          const card1 = el('div', 'rounded-2xl border border-slate-200 p-4');
+          card1.appendChild(el('h3', 'font-semibold mb-2', t.findM));
+          const f1 = el('div', 'grid grid-cols-2 gap-3');
+          const f1_mass = el('input', 'rounded-xl border-slate-300', ''); f1_mass.placeholder = t.mass; f1_mass.type='number'; f1_mass.step='any';
+          const f1_formula = el('input', 'rounded-xl border-slate-300 col-span-2', ''); f1_formula.placeholder = t.formula;
+          const f1_vol = el('input', 'rounded-xl border-slate-300', ''); f1_vol.placeholder = t.volumeL; f1_vol.type='number'; f1_vol.step='any';
+          const f1_btn = el('button', 'col-span-2 px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700', t.computeM);
+          const f1_out = el('div', 'mt-2 text-slate-700');
+          f1.append(f1_mass, f1_vol, f1_formula, f1_btn, f1_out); card1.appendChild(f1);
+
+          f1_btn.addEventListener('click', () => {
+            try {
+              const m = parseFloat(f1_mass.value);
+              const V = parseFloat(f1_vol.value);
+              const mm = molarMass(f1_formula.value.trim()).mm;
+              if (!(m>0) || !(V>0)) throw new Error(t.errPos);
+              const n = m / mm; const M = n / V;
+              f1_out.textContent = `M = ${M.toFixed(4)} mol·L⁻¹`;
+            } catch (e) { f1_out.textContent = e.message; }
+          });
+
+          const card2 = el('div', 'rounded-2xl border border-slate-200 p-4');
+          card2.appendChild(el('h3', 'font-semibold mb-2', t.targetM));
+          const f2 = el('div', 'grid grid-cols-2 gap-3');
+          const f2_M = el('input', 'rounded-xl border-slate-300', ''); f2_M.placeholder = t.Munit; f2_M.type='number'; f2_M.step='any';
+          const f2_formula = el('input', 'rounded-xl border-slate-300 col-span-2', ''); f2_formula.placeholder = t.formula;
+          const f2_V = el('input', 'rounded-xl border-slate-300', ''); f2_V.placeholder = t.volumeL; f2_V.type='number'; f2_V.step='any';
+          const f2_btn = el('button', 'col-span-2 px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700', t.computeMass);
+          const f2_out = el('div', 'mt-2 text-slate-700');
+          f2.append(f2_M, f2_V, f2_formula, f2_btn, f2_out); card2.appendChild(f2);
+
+          f2_btn.addEventListener('click', () => {
+            try {
+              const M = parseFloat(f2_M.value);
+              const V = parseFloat(f2_V.value);
+              const mm = molarMass(f2_formula.value.trim()).mm;
+              if (!(M>0) || !(V>0)) throw new Error(t.errPos);
+              const n = M * V; const mass = n * mm;
+              f2_out.textContent = `Mass needed = ${mass.toFixed(3)} g`;
+            } catch (e) { f2_out.textContent = e.message; }
+          });
+
+          grid.append(card1, card2); root.appendChild(grid); return root;
+        }
+      },
+
+      dilution: {
+        render() {
+          const t = I18N[document.documentElement.dataset.lang];
+          const root = el('div', 'space-y-4');
+          root.appendChild(el('p', 'text-sm text-slate-600', t.dilutionLead));
+          const grid = el('div', 'grid md:grid-cols-4 gap-3');
+          const c1 = el('input', 'rounded-xl border-slate-300', ''); c1.placeholder='C₁'; c1.type='number'; c1.step='any';
+          const v1 = el('input', 'rounded-xl border-slate-300', ''); v1.placeholder=t.volumeL.replace(' (L)','')+' (L)'; v1.type='number'; v1.step='any';
+          const c2 = el('input', 'rounded-xl border-slate-300', ''); c2.placeholder='C₂'; c2.type='number'; c2.step='any';
+          const v2 = el('input', 'rounded-xl border-slate-300', ''); v2.placeholder=t.volumeL.replace(' (L)','')+' (L)'; v2.type='number'; v2.step='any';
+          const btn = el('button', 'md:col-span-4 px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700', t.solve);
+          const out = el('div', 'md:col-span-4 text-slate-700');
+          grid.append(c1, v1, c2, v2, btn, out); root.appendChild(grid);
+
+          btn.addEventListener('click', () => {
+            const vals = [c1, v1, c2, v2].map(x => x.value === '' ? null : parseFloat(x.value));
+            const emptyIdx = vals.findIndex(v => v === null);
+            if (emptyIdx === -1) { out.textContent = t.leaveOne; return; }
+            const [C1,V1,C2,V2] = vals;
+            try {
+              let ans;
+              if (emptyIdx === 0) ans = (C2*V2)/V1;
+              if (emptyIdx === 1) ans = (C2*V2)/C1;
+              if (emptyIdx === 2) ans = (C1*V1)/V2;
+              if (emptyIdx === 3) ans = (C1*V1)/C2;
+              const labels = ['C₁','V₁','C₂','V₂'];
+              out.textContent = `${labels[emptyIdx]} = ${Number(ans).toPrecision(6)}` + t.sameUnits;
+            } catch { out.textContent = t.errNums; }
+          });
+          return root;
+        }
+      },
+
+      pH: {
+        render() {
+          const t = I18N[document.documentElement.dataset.lang];
+          const root = el('div', 'space-y-4');
+          root.appendChild(el('p', 'text-sm text-slate-600', t.phAssume));
+          const row = el('div', 'grid md:grid-cols-5 gap-3');
+          const type = el('select', 'rounded-xl border-slate-300');
+          type.innerHTML = `<option value="acid">${t.acid}</option><option value="base">${t.base}</option>`;
+          const conc = el('input', 'rounded-xl border-slate-300', ''); conc.placeholder=t.conc; conc.type='number'; conc.step='any';
+          const equiv = el('input', 'rounded-xl border-slate-300', ''); equiv.placeholder=t.equiv; equiv.type='number'; equiv.step='any'; equiv.value='1';
+          const btn = el('button', 'px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 md:col-span-2', t.computePH);
+          const out = el('div', 'md:col-span-5 text-lg font-semibold');
+          row.append(type, conc, equiv, btn, out); root.appendChild(row);
+          btn.addEventListener('click', () => {
+            const C = parseFloat(conc.value);
+            const n = parseFloat(equiv.value || '1');
+            if (!(C>0) || !(n>0)) { out.textContent = t.errPos; return; }
+            if (type.value === 'acid') {
+              const H = C * n; const pH = -Math.log10(H);
+              out.textContent = `pH = ${pH.toFixed(3)} (pOH = ${(14 - pH).toFixed(3)})`;
+            } else {
+              const OH = C * n; const pOH = -Math.log10(OH); const pH = 14 - pOH;
+              out.textContent = `pH = ${pH.toFixed(3)} (pOH = ${pOH.toFixed(3)})`;
+            }
+          });
+          return root;
+        }
+      },
+
+      igl: {
+        render() {
+          const t = I18N[document.documentElement.dataset.lang];
+          const root = el('div', 'space-y-4');
+          root.appendChild(el('p', 'text-sm text-slate-600', t.iglLead));
+          const grid = el('div', 'grid md:grid-cols-6 gap-3');
+          const P = el('input', 'rounded-xl border-slate-300', ''); P.placeholder='P (atm)'; P.type='number'; P.step='any';
+          const V = el('input', 'rounded-xl border-slate-300', ''); V.placeholder='V (L)'; V.type='number'; V.step='any';
+          const n = el('input', 'rounded-xl border-slate-300', ''); n.placeholder='n (mol)'; n.type='number'; n.step='any';
+          const T = el('input', 'rounded-xl border-slate-300', ''); T.placeholder='T (K)'; T.type='number'; T.step='any';
+          const R = 0.082057;
+          const btn = el('button', 'md:col-span-2 px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700', t.solve);
+          const out = el('div', 'md:col-span-6 text-slate-700');
+          grid.append(P,V,n,T,btn,out); root.appendChild(grid);
+          btn.addEventListener('click', () => {
+            const vals = [P,V,n,T].map(x => x.value === '' ? null : parseFloat(x.value));
+            const empty = vals.findIndex(v => v === null);
+            if (empty === -1) { out.textContent = I18N[document.documentElement.dataset.lang].leaveExactly; return; }
+            const [p,v,m,tv] = vals;
+            let ans; const names=['P','V','n','T'];
+            try {
+              if (empty===0) ans = (m*R*tv)/v;
+              if (empty===1) ans = (m*R*tv)/p;
+              if (empty===2) ans = (p*v)/(R*tv);
+              if (empty===3) ans = (p*v)/(m*R);
+              out.textContent = `${names[empty]} = ${Number(ans).toPrecision(6)} (${names[empty]==='P'?'atm':names[empty]==='V'?'L':names[empty]==='n'?'mol':'K'})`;
+            } catch { out.textContent=I18N[document.documentElement.dataset.lang].errNums; }
+          });
+          return root;
+        }
+      },
+
+      triangle: {
+        render() {
+          const t = I18N[document.documentElement.dataset.lang];
+          const root = el('div', 'space-y-4');
+          root.appendChild(el('p', 'text-sm text-slate-600', t.triangleLead));
+          const grid = el('div', 'grid md:grid-cols-6 gap-3');
+          const m = el('input','rounded-xl border-slate-300',''); m.placeholder='m (g)'; m.type='number'; m.step='any';
+          const n = el('input','rounded-xl border-slate-300',''); n.placeholder='n (mol)'; n.type='number'; n.step='any';
+          const M = el('input','rounded-xl border-slate-300',''); M.placeholder='M (g·mol⁻¹)'; M.type='number'; M.step='any';
+          const btn = el('button','md:col-span-3 px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700', t.solve);
+          const out = el('div','md:col-span-6 text-slate-700');
+          grid.append(m,n,M,btn,out); root.appendChild(grid);
+          btn.addEventListener('click',()=>{
+            const vals=[m,n,M].map(x=>x.value===''?null:parseFloat(x.value));
+            const missing=vals.filter(v=>v===null).length;
+            if(missing!==1){ out.textContent=I18N[document.documentElement.dataset.lang].leaveExactly; return; }
+            let [mmol, nval, Mval]=vals;
+            if(mmol===null){ out.textContent=`m = ${(nval*Mval).toFixed(4)} g`; }
+            else if(nval===null){ out.textContent=`n = ${(mmol/Mval).toFixed(6)} mol`; }
+            else { out.textContent=`M = ${(mmol/nval).toFixed(4)} g·mol⁻¹`; }
+          });
+          return root;
+        }
+      }
+    };
+
+    const tabbar = document.getElementById('tabbar');
+    Object.entries(PANELS).forEach(([id, p], idx) => {
+      const b = el('button','px-4 py-2 rounded-xl bg-white border text-slate-700 hover:bg-slate-100');
+      b.dataset.tab = id; b.textContent = I18N[document.documentElement.dataset.lang].tabs[id];
+      b.addEventListener('click', () => setActiveTab(id));
+      tabbar.appendChild(b);
+      if (idx===0) setTimeout(()=>setActiveTab(id));
+    });
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('year2').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
